@@ -29,3 +29,22 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+nelmio_api_doc:
+    documentation:
+        host: rest-myhammer.loc
+        schemes: [http, https]
+        info:
+            title: My Hammer Rest API
+            description: Job create api!
+            version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt}'
+                name: Authorization
+                in: header
+        security:
+            - Bearer: []
+        paths:
+            

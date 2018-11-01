@@ -12,6 +12,9 @@ use App\Entity\City;
 use App\Form\JobType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Form\FormInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 
 class JobController extends AbstractController
 {
@@ -26,9 +29,56 @@ class JobController extends AbstractController
     }
 
     /**
-     * @Route("/jobs", methods={"POST"})
-     * @param $request Request
-     * @param $validator ValidatorInterface
+     * Save new job.
+     *
+     * It is about creating a form where the customers can enter jobs for which they need a tradesman.
+     *
+     * @Route("/api/jobs", methods={"POST"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns new save job",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Job::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="title",
+     *     in="query",
+     *     type="string",
+     *     description="The field used to job title"
+     * )
+     * @SWG\Parameter(
+     *     name="service_id",
+     *     in="query",
+     *     type="integer",
+     *     description="The field used to job service"
+     * )
+     * @SWG\Parameter(
+     *     name="city_id",
+     *     in="query",
+     *     type="integer",
+     *     description="The field used to job city"
+     * )
+     * @SWG\Parameter(
+     *     name="description",
+     *     in="query",
+     *     type="string",
+     *     description="The field used to job description"
+     * )
+     * @SWG\Parameter(
+     *     name="zip code",
+     *     in="query",
+     *     type="string",
+     *     description="The field used to job city zip code"
+     * )
+     * @SWG\Parameter(
+     *     name="end date",
+     *     in="query",
+     *     type="string",
+     *     description="The field used to job end date"
+     * )
+     * @SWG\Tag(name="jobs")
      */
     public function jobs(Request $request, ValidatorInterface $validator)
     {
