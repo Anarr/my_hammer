@@ -46,18 +46,21 @@ class JobController extends AbstractController
      *     name="title",
      *     in="query",
      *     type="string",
+     *     required=true,
      *     description="The field used to job title"
      * )
      * @SWG\Parameter(
      *     name="service_id",
      *     in="query",
      *     type="integer",
+     *     required=true,
      *     description="The field used to job service"
      * )
      * @SWG\Parameter(
      *     name="city_id",
      *     in="query",
      *     type="integer",
+     *     required=true,
      *     description="The field used to job city"
      * )
      * @SWG\Parameter(
@@ -70,12 +73,14 @@ class JobController extends AbstractController
      *     name="zip code",
      *     in="query",
      *     type="string",
+     *     required=true,
      *     description="The field used to job city zip code"
      * )
      * @SWG\Parameter(
      *     name="end date",
      *     in="query",
      *     type="string",
+     *     required=true,
      *     description="The field used to job end date"
      * )
      * @SWG\Tag(name="jobs")
