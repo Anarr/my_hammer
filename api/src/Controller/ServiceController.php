@@ -26,11 +26,14 @@ class ServiceController extends AbstractController
 
     /**
      * @Route("/services", methods={"POST"})
+     * @param $request Request
+     * @param $validator ValidatorInterface
      */
     public function services(Request $request, ValidatorInterface $validator)
     {
         $service = new Service();
 
+        // set default values 
         $service->setCreatedDate(new \DateTime());
         $service->setUpdatedDate(new \DateTime());
         $service->setActive(1);
@@ -45,6 +48,7 @@ class ServiceController extends AbstractController
     
         $form->submit($data);
         
+        // check form is valid or not
         if (false === $form->isValid()) {
             $errors = $this->getErrorMessages($form);
             
@@ -61,6 +65,7 @@ class ServiceController extends AbstractController
         $this->entityManager->persist($form->getData());
         $this->entityManager->flush();
 
+        // get saved service info
         $savedService = $this->getDoctrine()
         ->getRepository(Service::class)
         ->find($service->getId());
@@ -80,8 +85,12 @@ class ServiceController extends AbstractController
             JsonResponse::HTTP_CREATED
         );
     }
-
-    public function getErrorMessages(FormInterface $form)
+    
+    /**
+     * generate human readble form errors
+     * @param $form FormInterface
+     */
+    private function getErrorMessages(FormInterface $form)
     {
         $errors = array();
     
