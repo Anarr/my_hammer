@@ -7,12 +7,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Service;
-use App\Form\ServiceType;
+use App\Entity\Job;
+use App\Form\JobType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Form\FormInterface;
 
-class ServiceController extends AbstractController
+class JobController extends AbstractController
 {
     /**
      * @var EntityManagerInterface
@@ -25,18 +25,18 @@ class ServiceController extends AbstractController
     }
 
     /**
-     * @Route("/services", methods={"POST"})
+     * @Route("/jobs", methods={"POST"})
      * @param $request Request
      * @param $validator ValidatorInterface
      */
-    public function services(Request $request, ValidatorInterface $validator)
+    public function jobs(Request $request, ValidatorInterface $validator)
     {
-        $service = new Service();
+        $job = new Job();
 
         // set default values 
-        $service->setCreatedDate(new \DateTime());
-        $service->setUpdatedDate(new \DateTime());
-        $service->setActive(1);
+        $job->setCreatedDate(new \DateTime());
+        $job->setUpdatedDate(new \DateTime());
+        $job->setActive(1);
 
         // decode json data php array
         $data = json_decode(
@@ -44,7 +44,7 @@ class ServiceController extends AbstractController
             true
         );
         
-        $form = $this->createForm(ServiceType::class, $service);
+        $form = $this->createForm(JobType::class, $job);
     
         $form->submit($data);
         
@@ -66,15 +66,17 @@ class ServiceController extends AbstractController
         $this->entityManager->flush();
 
         // get saved service info
-        $savedService = $this->getDoctrine()
-        ->getRepository(Service::class)
-        ->find($service->getId());
+        $savedJob = $this->getDoctrine()
+        ->getRepository(Job::class)
+        ->find($job->getId());
         
         $data = (object)[
-            'id' => $savedService->getId(),
-            'title' => $savedService->getTitle(),
-            'description' => $savedService->getDescription(),
-            'end_date' => $savedService->getEndDate(),
+            'id' => $savedJob->getId(),
+            'title' => $savedJob->getTitle(),
+            'description' => $savedJob->getDescription(),
+            'end_date' => $savedJob->getEndDate(),
+            'city' => $savedJob->getCityId()->getName(),
+            'service' => $savedJob->getServiceId()->getName()
         ];
         
         return new JsonResponse(

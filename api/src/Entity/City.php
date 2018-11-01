@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ServiceRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CityRepository")
  */
-class Service
+class City
 {
     /**
      * @ORM\Id()
@@ -19,17 +19,17 @@ class Service
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=120)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=5)
      */
-    private $service_id;
+    private $zip_code;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Job", mappedBy="service_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Job", mappedBy="city_id")
      */
     private $jobs;
 
@@ -55,14 +55,14 @@ class Service
         return $this;
     }
 
-    public function getServiceId(): ?int
+    public function getZipCode(): ?string
     {
-        return $this->service_id;
+        return $this->zip_code;
     }
 
-    public function setServiceId(int $service_id): self
+    public function setZipCode(string $zip_code): self
     {
-        $this->service_id = $service_id;
+        $this->zip_code = $zip_code;
 
         return $this;
     }
@@ -79,7 +79,7 @@ class Service
     {
         if (!$this->jobs->contains($job)) {
             $this->jobs[] = $job;
-            $job->setServiceId($this);
+            $job->setCityId($this);
         }
 
         return $this;
@@ -90,8 +90,8 @@ class Service
         if ($this->jobs->contains($job)) {
             $this->jobs->removeElement($job);
             // set the owning side to null (unless already changed)
-            if ($job->getServiceId() === $this) {
-                $job->setServiceId(null);
+            if ($job->getCityId() === $this) {
+                $job->setCityId(null);
             }
         }
 
