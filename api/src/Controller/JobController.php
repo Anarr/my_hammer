@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Job;
+use App\Entity\City;
 use App\Form\JobType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Form\FormInterface;
@@ -32,7 +33,7 @@ class JobController extends AbstractController
     public function jobs(Request $request, ValidatorInterface $validator)
     {
         $job = new Job();
-
+        $city = new City();
         // set default values 
         $job->setCreatedDate(new \DateTime());
         $job->setUpdatedDate(new \DateTime());
@@ -43,6 +44,7 @@ class JobController extends AbstractController
             $request->getContent(), 
             true
         );
+        $zipCodes = $this->entityManager->getRepository(City::class)->getZipCodes();
         
         $form = $this->createForm(JobType::class, $job);
     
@@ -61,7 +63,18 @@ class JobController extends AbstractController
             );
         }
 
+        if (!in_array($form['zip_code']->getData(), $zipCodes)) {
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'errors' => (object)['zip_code' => 'Invalid data'],
+                ],
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
         // if pass validation then save data
+        
         $this->entityManager->persist($form->getData());
         $this->entityManager->flush();
 
@@ -76,7 +89,8 @@ class JobController extends AbstractController
             'description' => $savedJob->getDescription(),
             'end_date' => $savedJob->getEndDate(),
             'city' => $savedJob->getCityId()->getName(),
-            'service' => $savedJob->getServiceId()->getName()
+            'service' => $savedJob->getServiceId()->getName(),
+            'zip_code' => $savedJob->getZipCode()
         ];
         
         return new JsonResponse(

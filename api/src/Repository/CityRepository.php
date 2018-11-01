@@ -19,6 +19,16 @@ class CityRepository extends ServiceEntityRepository
         parent::__construct($registry, City::class);
     }
 
+    public function getZipCodes()
+    {
+        $result = $this->createQueryBuilder('fc')
+            ->select('fc.zip_code')
+            ->getQuery()
+            ->getScalarResult();
+            
+        return array_map('current', $result);
+    }
+
 //    /**
 //     * @return City[] Returns an array of City objects
 //     */
